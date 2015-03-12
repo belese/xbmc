@@ -136,6 +136,9 @@ CVariant::CVariant(VariantType type)
 
   switch (type)
   {
+    case VariantTypeByte:
+      m_data.byte = 0x00;
+      break;
     case VariantTypeInteger:
       m_data.integer = 0;
       break;
@@ -164,6 +167,12 @@ CVariant::CVariant(VariantType type)
       memset(&m_data, 0, sizeof(m_data));
       break;
   }
+}
+
+CVariant::CVariant(unsigned char byte)
+{
+  m_type = VariantTypeByte;
+  m_data.byte = byte;
 }
 
 CVariant::CVariant(int integer)
@@ -291,6 +300,11 @@ void CVariant::cleanup()
   m_type = VariantTypeNull;
 }
 
+bool CVariant::isByte() const
+{
+  return m_type == VariantTypeByte;
+}
+
 bool CVariant::isInteger() const
 {
   return m_type == VariantTypeInteger;
@@ -341,10 +355,28 @@ CVariant::VariantType CVariant::type() const
   return m_type;
 }
 
+unsigned char CVariant::asByte(unsigned char fallback) const
+{
+	switch (m_type)
+   {
+    case VariantTypeByte:
+      return m_data.byte;
+    case VariantTypeInteger:
+      return (unsigned char) m_data.integer;
+    case VariantTypeUnsignedInteger:
+      return (unsigned char) m_data.unsignedinteger;
+    case VariantTypeDouble:
+      return (unsigned char) m_data.dvalue;    
+    default:
+      return fallback;
+  }
+}
 int64_t CVariant::asInteger(int64_t fallback) const
 {
   switch (m_type)
   {
+    case VariantTypeByte:
+      return (int64_t)m_data.byte;
     case VariantTypeInteger:
       return m_data.integer;
     case VariantTypeUnsignedInteger:
@@ -366,6 +398,8 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
 {
   switch (m_type)
   {
+	case VariantTypeByte:
+      return (uint64_t)m_data.byte;
     case VariantTypeUnsignedInteger:
       return m_data.unsignedinteger;
     case VariantTypeInteger:
@@ -387,6 +421,8 @@ double CVariant::asDouble(double fallback) const
 {
   switch (m_type)
   {
+    case VariantTypeByte:
+      return (double)m_data.byte;
     case VariantTypeDouble:
       return m_data.dvalue;
     case VariantTypeInteger:
@@ -408,6 +444,8 @@ float CVariant::asFloat(float fallback) const
 {
   switch (m_type)
   {
+    case VariantTypeByte:
+      return (float)m_data.byte;
     case VariantTypeDouble:
       return (float)m_data.dvalue;
     case VariantTypeInteger:
@@ -429,6 +467,8 @@ bool CVariant::asBoolean(bool fallback) const
 {
   switch (m_type)
   {
+    case VariantTypeByte:
+      return m_data.byte != 0x00;
     case VariantTypeBoolean:
       return m_data.boolean;
     case VariantTypeInteger:
@@ -455,7 +495,7 @@ bool CVariant::asBoolean(bool fallback) const
 std::string CVariant::asString(const std::string &fallback /* = "" */) const
 {
   switch (m_type)
-  {
+  {          
     case VariantTypeString:
       return *m_data.string;
     case VariantTypeBoolean:
@@ -463,12 +503,15 @@ std::string CVariant::asString(const std::string &fallback /* = "" */) const
     case VariantTypeInteger:
     case VariantTypeUnsignedInteger:
     case VariantTypeDouble:
+    case VariantTypeByte:
     {
       std::ostringstream strStream;
       if (m_type == VariantTypeInteger)
         strStream << m_data.integer;
       else if (m_type == VariantTypeUnsignedInteger)
         strStream << m_data.unsignedinteger;
+      else if (m_type == VariantTypeByte)
+        strStream << m_data.byte;
       else
         strStream << m_data.dvalue;
       return strStream.str();
@@ -491,12 +534,15 @@ std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) co
     case VariantTypeInteger:
     case VariantTypeUnsignedInteger:
     case VariantTypeDouble:
+    case VariantTypeByte:
     {
       std::wostringstream strStream;
       if (m_type == VariantTypeInteger)
         strStream << m_data.integer;
       else if (m_type == VariantTypeUnsignedInteger)
         strStream << m_data.unsignedinteger;
+      else if (m_type == VariantTypeByte)
+        strStream << m_data.byte;
       else
         strStream << m_data.dvalue;
       return strStream.str();

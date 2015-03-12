@@ -36,6 +36,7 @@ class CVariant
 public:
   enum VariantType
   {
+    VariantTypeByte,
     VariantTypeInteger,
     VariantTypeUnsignedInteger,
     VariantTypeBoolean,
@@ -49,6 +50,7 @@ public:
   };
 
   CVariant(VariantType type = VariantTypeNull);
+  CVariant(unsigned char byte);
   CVariant(int integer);
   CVariant(int64_t integer);
   CVariant(unsigned int unsignedinteger);
@@ -68,6 +70,7 @@ public:
   CVariant(const CVariant &variant);
   ~CVariant();
 
+  bool isByte() const;
   bool isInteger() const;
   bool isUnsignedInteger() const;
   bool isBoolean() const;
@@ -87,7 +90,8 @@ public:
   std::wstring asWideString(const std::wstring &fallback = L"") const;
   double asDouble(double fallback = 0.0) const;
   float asFloat(float fallback = 0.0f) const;
-
+  unsigned char asByte(unsigned char fallback = 0x00) const;
+  
   CVariant &operator[](const std::string &key);
   const CVariant &operator[](const std::string &key) const;
   CVariant &operator[](unsigned int position);
@@ -139,6 +143,7 @@ private:
   void cleanup();
   union VariantUnion
   {
+    unsigned char byte;
     int64_t integer;
     uint64_t unsignedinteger;
     bool boolean;
