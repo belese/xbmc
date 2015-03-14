@@ -73,6 +73,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/pictures/pictures.a \
                    xbmc/playlists/playlists.a \
                    xbmc/powermanagement/powermanagement.a \
+                   xbmc/bluetooth/bluetooth.a \
                    xbmc/profiles/profiles.a \
                    xbmc/profiles/dialogs/profiles_dialogs.a \
                    xbmc/profiles/windows/profiles_windows.a \
